@@ -127,7 +127,7 @@ public class LoginActivity extends AppCompatActivity   implements View.OnClickLi
 
         String email = editTextEmail.getText().toString().trim();
         String password  = editTextPassword.getText().toString().trim();
-        progressDialog.setMessage("Registering Please Wait...");
+        progressDialog.setMessage("Login Please Wait...");
         progressDialog.show();
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
