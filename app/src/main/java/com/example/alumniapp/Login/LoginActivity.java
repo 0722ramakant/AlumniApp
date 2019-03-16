@@ -136,10 +136,14 @@ public class LoginActivity extends AppCompatActivity   implements View.OnClickLi
                         if (task.isSuccessful()) {
 
                             if (mAuth.getCurrentUser().isEmailVerified()){
+
+
                                 Intent i=new Intent(LoginActivity.this, FrontActivity.class);
                                 startActivity(i);
-                                FirebaseUser user = mAuth.getCurrentUser();
-                                updateUI(user);
+
+
+
+
                             }else {
                                 Toast.makeText(LoginActivity.this, "please verify your email.",
                                         Toast.LENGTH_SHORT).show();
@@ -151,10 +155,10 @@ public class LoginActivity extends AppCompatActivity   implements View.OnClickLi
 
                             Toast.makeText(LoginActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
-                            updateUI(null);
+
                         }
 
-                        // ...
+
                     }
                 });
 
@@ -163,18 +167,15 @@ public class LoginActivity extends AppCompatActivity   implements View.OnClickLi
     @Override
     public void onStart() {
         super.onStart();
-        if(mAuth.getCurrentUser() != null) {
+        if(mAuth.getCurrentUser() != null&& mAuth.getCurrentUser().isEmailVerified()) {
             Intent i=new Intent(LoginActivity.this, FrontActivity.class);
             startActivity(i);
         }
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        updateUI(currentUser);
-    }
-
-    private void updateUI(FirebaseUser currentUser) {
-       ;
-
 
     }
+
+
+
+
 }

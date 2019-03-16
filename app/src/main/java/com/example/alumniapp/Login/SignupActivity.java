@@ -22,6 +22,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class SignupActivity extends AppCompatActivity    implements View.OnClickListener {
    private EditText mobile;
@@ -34,9 +36,10 @@ public class SignupActivity extends AppCompatActivity    implements View.OnClick
     Button signup;
     private ProgressDialog progressDialog;
     RelativeLayout rellay1,rellay2;
-
+    private DatabaseReference mDatabase;
     private EditText editTextEmail;
     private EditText editTextPassword;
+    private EditText editTextName;
     Handler handler=new Handler();
     Runnable runnable=new Runnable() {
         @Override
@@ -61,7 +64,9 @@ public class SignupActivity extends AppCompatActivity    implements View.OnClick
         mobile = findViewById(R.id.editmobile);
         editTextEmail=findViewById(R.id.edtemail);
         editTextPassword=findViewById(R.id.edtpass);
+        editTextName=findViewById(R.id.edtname);
         mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
         radioGroup=findViewById(R.id.radioGroup);
         login=findViewById(R.id.login);
         signup=findViewById(R.id.btnsignup);
@@ -89,9 +94,12 @@ signup.setOnClickListener((View.OnClickListener) this);
     private void registerUser(){
 
         //getting email and password from edit texts
-        String email = editTextEmail.getText().toString().trim();
-        String password  = editTextPassword.getText().toString().trim();
-
+        final String email = editTextEmail.getText().toString().trim();
+        final String password  = editTextPassword.getText().toString().trim();
+        final String name  = editTextName.getText().toString().trim();
+        int selectedId = radioGroup.getCheckedRadioButtonId();
+        genderradioButton = (RadioButton) findViewById(selectedId);
+        final String cat=genderradioButton.getText().toString();
         //checking if email and passwords are empty
         if(TextUtils.isEmpty(email)){
             Toast.makeText(this,"Please enter email",Toast.LENGTH_LONG).show();
@@ -120,8 +128,18 @@ signup.setOnClickListener((View.OnClickListener) this);
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()){
+
+
+
                                         no = mobile.getText().toString();
                                         validNo(no);
+                                        String user_id = mAuth.getCurrentUser().getUid();
+                                        DatabaseReference current_user_db = mDatabase.child(user_id);
+                                        current_user_db.child("Category").setValue(cat);
+                                        current_user_db.child("Email").setValue(email);
+                                        current_user_db.child("Password").setValue(password);
+                                        current_user_db.child("mobileno").setValue(no);
+                                        current_user_db.child("Name").setValue(name);
 
                                         Toast.makeText(SignupActivity.this,"Successfully registered.please check your email",Toast.LENGTH_LONG).show();
                                         editTextEmail.setText(" ");
